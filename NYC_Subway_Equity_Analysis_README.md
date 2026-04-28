@@ -116,13 +116,13 @@ pip install -r requirements.txt
 ### 8.2 Run Pipeline  
 
 ```bash
-python scripts/01_prepare_station_crosswalk.py
-python scripts/02_prepare_service_frequency.py
-python scripts/03_prepare_ridership.py
-python scripts/04_prepare_delays.py
-python scripts/05_prepare_census.py
-python scripts/06_build_analysis_table.py
-python scripts/07_run_hypothesis_tests.py
+python scripts/station_crosswalk.py
+python scripts/service_frequency.py
+python scripts/ridership.py
+python scripts/delays.py
+python scripts/census.py
+python scripts/build_analysis_table.py
+python scripts/run_hypothesis_tests.py
 ```
 
 ### 8.3 Data Access  
@@ -173,15 +173,6 @@ export SOCRATA_APP_TOKEN=your_token_here
 - Avoid overinterpreting correlations as causation  
 - Ensure fair representation of communities  
 - Use data responsibly in discussions of inequality  
-
----
-
-## 13. Future Work  
-
-- Incorporate additional service metrics (e.g., crowding, reliability)  
-- Use causal inference methods if suitable data becomes available  
-- Extend analysis to buses or other transit systems  
-
 ---
 
 ## 14. Team  

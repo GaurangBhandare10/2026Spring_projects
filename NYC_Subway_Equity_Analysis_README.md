@@ -34,11 +34,10 @@ The project creates a **station-to-neighborhood linkage**, enabling equity analy
 ## 4. Data Description  
 
 ### 4.1 Sources  
-- MTA Subway Hourly Ridership (2020–2024)  
-- MTA Delay / Service Data (2020–2024)  
-- 2022 American Community Survey (ACS)  
-- MTA GTFS Static Feed  
-- NYC Census Tract Boundaries  
+- MTA Subway Hourly Ridership (2020–2024) | https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-Beginning-February-2022/wujg-7c2s  
+- MTA Delay / Service Data (2020–2024)    | https://data.ny.gov/Transportation/MTA-Subway-Service-Delivered-Beginning-2020/jue7-ix4a
+- 2022 American Community Survey (ACS)    | https://data.census.gov (Table B19013 for median income, B02001 for race) 
+- MTA GTFS Static Feed                    | https://api.mta.info/#/subwayRealTimeFeeds 
 
 ### 4.2 Unit of Analysis  
 - **Station-level** (primary)  

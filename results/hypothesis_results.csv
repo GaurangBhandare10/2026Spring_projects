@@ -1,0 +1,5 @@
+hypothesis,test,statistic,p_value,n,ci_low,ci_high
+H1,partial correlation,0.44761300657209874,3.449660372113118e-29,565,,
+H2,spearman correlation,-0.0017543859649122807,0.9943127370369946,19,,
+H3,mann-whitney u,101000.0,2.2850548391243654e-08,820,0.05815254522398271,0.23815448599414332
+H4_ridership,descriptive difference in mean ridership ratio,-0.23289133265583428,,30,,

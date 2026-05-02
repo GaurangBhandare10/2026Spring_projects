@@ -115,13 +115,14 @@ pip install -r requirements.txt
 ### 8.2 Run Pipeline  
 
 ```bash
-python scripts/station_crosswalk.py
-python scripts/service_frequency.py
-python scripts/ridership.py
-python scripts/delays.py
-python scripts/census.py
-python scripts/build_analysis_table.py
-python scripts/run_hypothesis_tests.py
+python scripts/01_station_crosswalk.py
+python scripts/02_service_frequency.py
+python scripts/03_ridership.py
+python scripts/04_delays.py
+python scripts/05_census.py
+python scripts/06_build_analysis_table.py
+python scripts/07_run_hypothesis_tests.py
+python scripts/08_visualization.py
 ```
 
 ### 8.3 Data Access  

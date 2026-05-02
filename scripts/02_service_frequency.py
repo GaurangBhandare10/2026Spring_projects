@@ -1,3 +1,5 @@
+"""Compute scheduled peak-hour service frequency from the GTFS feed."""
+
 from pathlib import Path
 import sys
 
@@ -12,23 +14,25 @@ from subway_equity.remote import read_gtfs_table
 
 
 def time_to_seconds(value: str) -> int:
-    """Convert HH:MM:SS text to seconds after midnight.
+    """Convert a GTFS time string into seconds after midnight.
 
-    >>> time_to_seconds("01:30:15")
-    5415
+    >>> time_to_seconds("07:30:00")
+    27000
     """
+
     hours, minutes, seconds = value.split(":")
     return int(hours) * 3600 + int(minutes) * 60 + int(seconds)
 
 
 def is_peak_departure(seconds: int) -> bool:
-    """Return True when a departure falls inside the defined peak windows.
+    """Return ``True`` when a departure falls inside a configured peak window.
 
-    >>> is_peak_departure(8 * 3600)
+    >>> is_peak_departure(time_to_seconds("08:15:00"))
     True
-    >>> is_peak_departure(12 * 3600)
+    >>> is_peak_departure(time_to_seconds("12:00:00"))
     False
     """
+
     for start_hour, end_hour in PEAK_WINDOWS:
         start = start_hour * 3600
         end = end_hour * 3600
@@ -38,6 +42,8 @@ def is_peak_departure(seconds: int) -> bool:
 
 
 def main() -> None:
+    """Summarize weekday peak-hour trip counts and routes served by station."""
+
     ensure_project_dirs()
 
     stops = normalize_columns(read_gtfs_table("stops.txt"))
@@ -61,6 +67,8 @@ def main() -> None:
     departure_col = "departure_time" if "departure_time" in merged.columns else "arrival_time"
     merged = merged.dropna(subset=[departure_col])
     merged["departure_seconds"] = merged[departure_col].astype(str).map(time_to_seconds)
+    # Keep only departures within the project definition of peak commuting
+    # hours so the service metric matches hypothesis H1.
     merged = merged.loc[merged["departure_seconds"].map(is_peak_departure)]
 
     merged["parent_station"] = merged["parent_station"].fillna(merged["stop_id"])

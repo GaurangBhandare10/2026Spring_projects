@@ -1,3 +1,5 @@
+"""Summarize line-level subway delays over the project analysis window."""
+
 from pathlib import Path
 import sys
 
@@ -12,6 +14,8 @@ from subway_equity.remote import fetch_socrata_dataset
 
 
 def main() -> None:
+    """Build monthly and average weekly delay metrics for each line."""
+
     ensure_project_dirs()
 
     delays = normalize_columns(fetch_socrata_dataset("delays"))
@@ -43,6 +47,8 @@ def main() -> None:
     print(f"Retained {len(delays):,} delay rows within {ANALYSIS_START} to {ANALYSIS_END}.", flush=True)
 
     if date_col in ["month", "month_beginning"]:
+        # When the source is already monthly, convert those totals into an
+        # approximate weekly rate so line comparisons stay on a common scale.
         delays["month_start"] = delays[date_col].dt.to_period("M").dt.to_timestamp()
         monthly = (
             delays.groupby([line_col, "month_start"], as_index=False)[count_col]

@@ -1,3 +1,5 @@
+"""Build a station-to-Census-tract crosswalk from GTFS stop coordinates."""
+
 from pathlib import Path
 import sys
 
@@ -12,6 +14,8 @@ from subway_equity.remote import geocode_station_tracts, read_gtfs_table
 
 
 def main() -> None:
+    """Geocode one representative row per station complex to a tract GEOID."""
+
     ensure_project_dirs()
 
     print("Loading GTFS stops from cached or live MTA feed...", flush=True)
@@ -25,6 +29,9 @@ def main() -> None:
         station_rows = pd.DataFrame()
 
     if station_rows.empty:
+        # Some GTFS feeds identify station complexes via parent_station rather
+        # than dedicated location_type rows, so we fall back to one child stop
+        # per complex when needed.
         station_rows = stops.copy()
         station_rows["station_complex_id"] = station_rows["parent_station"].fillna(station_rows["stop_id"])
         station_rows = (

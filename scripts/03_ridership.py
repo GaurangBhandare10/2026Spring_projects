@@ -1,3 +1,5 @@
+"""Create station-level ridership summaries and recovery ratios."""
+
 from pathlib import Path
 import sys
 
@@ -13,6 +15,8 @@ from subway_equity.remote import fetch_ridership_daily_aggregates
 
 
 def main() -> None:
+    """Aggregate daily ridership into station/year/day-type summaries."""
+
     ensure_project_dirs()
 
     print("Fetching aggregated daily ridership from the MTA Socrata API...", flush=True)

@@ -141,16 +141,46 @@ export SOCRATA_APP_TOKEN=your_token_here
 ```
 .
 ├── README.md
-├── requirements.txt
 ├── data/
-├── docs/
-├── notebooks/
+│   ├── cache
+│   ├──processed/
+│       ├── line_analysis_table.csv
+│       ├── line_delay_summary.csv
+│       ├── station_analysis_table.csv
+│       ├── station_peak_service_frequency.csv
+│       ├── station_ridership_summary.csv
+│       ├── station_tract_crosswalk.csv
+│       ├──tract_demographics.csv
+|       └──readme.md
 ├── results/
+|   ├──hypothesis_results.csv
+|   ├──readme.md
+|   └── figures/
+│      ├── h1_income_vs_peak_service.png
+│      ├── h2_delay_vs_income.png
+│      ├── h3_weekday_weekend_ratio.png
+│      ├── h4_shuttle_monthly_delays.png
+│      └── equity_overview_minority_majority_service.png
+│ 
 ├── scripts/
+│   ├── 01_prepare_station_crosswalk.py
+│   ├── 02_prepare_service_frequency.py
+│   ├── 03_prepare_ridership.py
+│   ├── 04_prepare_delays.py
+│   ├── 05_prepare_census.py
+│   ├── 06_build_analysis_table.py
+│   ├── 07_run_hypothesis_tests.py
+│   ├── 08_make_visualizations.py
+|   └──readme.md
 └── src/
-```
+    └── utility_functions/
+        ├── config.py
+        ├── io.py
+        ├── metrics.py
+        ├── remote.py
+        └── readme.md
 
----
+```
 
 ## 10. Results (To Be Added)  
 - Figures: Service frequency, delays, ridership comparisons  

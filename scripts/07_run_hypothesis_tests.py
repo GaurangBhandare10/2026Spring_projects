@@ -12,7 +12,13 @@ sys.path.append(str(ROOT / "src"))
 
 from subway_equity.config import OUTPUT_FILES, SHUTTLE_CASE_STUDY
 from subway_equity.io import ensure_project_dirs, normalize_columns, read_table
-from subway_equity.metrics import bootstrap_median_difference, partial_correlation
+from subway_equity.metrics import (
+    bootstrap_correlation_interval,
+    bootstrap_mean_difference,
+    bootstrap_median_difference,
+    bootstrap_partial_correlation_interval,
+    partial_correlation,
+)
 
 
 def match_any_value(values: pd.Series, targets: list[str]) -> pd.Series:
@@ -46,6 +52,27 @@ def match_route_ids(routes: pd.Series, route_ids: list[str]) -> pd.Series:
     return routes.map(has_route)
 
 
+def interpret_result(hypothesis: str, statistic: float, p_value: float) -> str:
+    """Return a short, report-friendly interpretation label for a result."""
+
+    if pd.isna(p_value):
+        return "descriptive only"
+    if p_value >= 0.05:
+        return "not clearly supported"
+
+    if hypothesis == "H1":
+        return "supported" if statistic < 0 else "significant, opposite direction"
+    if hypothesis == "H2":
+        return "supported" if statistic < 0 else "significant, opposite direction"
+    if hypothesis == "H3":
+        return "supported"
+    if hypothesis == "H4_delay":
+        return "supported" if statistic > 0 else "significant, opposite direction"
+    if hypothesis == "H4_ridership":
+        return "supported" if statistic < 0 else "significant, opposite direction"
+    return "significant"
+
+
 def main() -> None:
     """Compute hypothesis-level statistics from processed analysis tables."""
 
@@ -67,6 +94,11 @@ def main() -> None:
             h1_frame["peak_service_trips"],
             h1_frame["avg_daily_ridership"],
         )
+        ci_low, ci_high = bootstrap_partial_correlation_interval(
+            h1_frame["median_household_income"],
+            h1_frame["peak_service_trips"],
+            h1_frame["avg_daily_ridership"],
+        )
         results.append(
             {
                 "hypothesis": "H1",
@@ -74,6 +106,9 @@ def main() -> None:
                 "statistic": corr,
                 "p_value": p_value,
                 "n": len(h1_frame),
+                "ci_low": ci_low,
+                "ci_high": ci_high,
+                "interpretation": interpret_result("H1", corr, p_value),
             }
         )
 
@@ -82,6 +117,11 @@ def main() -> None:
         rho, p_value = stats.spearmanr(
             h2_frame["ridership_weighted_income"], h2_frame["avg_weekly_delays"]
         )
+        ci_low, ci_high = bootstrap_correlation_interval(
+            h2_frame["ridership_weighted_income"],
+            h2_frame["avg_weekly_delays"],
+            method="spearman",
+        )
         results.append(
             {
                 "hypothesis": "H2",
@@ -89,6 +129,9 @@ def main() -> None:
                 "statistic": rho,
                 "p_value": p_value,
                 "n": len(h2_frame),
+                "ci_low": ci_low,
+                "ci_high": ci_high,
+                "interpretation": interpret_result("H2", rho, p_value),
             }
         )
 
@@ -109,6 +152,7 @@ def main() -> None:
                     "n": len(low) + len(high),
                     "ci_low": ci_low,
                     "ci_high": ci_high,
+                    "interpretation": interpret_result("H3", u_stat, p_value),
                 }
             )
 
@@ -128,6 +172,7 @@ def main() -> None:
         ]
         if len(rockaway) > 1 and len(times_square) > 1:
             t_stat, p_value = stats.ttest_ind(rockaway, times_square, equal_var=False)
+            ci_low, ci_high = bootstrap_mean_difference(rockaway, times_square)
             results.append(
                 {
                     "hypothesis": "H4_delay",
@@ -135,6 +180,9 @@ def main() -> None:
                     "statistic": t_stat,
                     "p_value": p_value,
                     "n": len(rockaway) + len(times_square),
+                    "ci_low": ci_low,
+                    "ci_high": ci_high,
+                    "interpretation": interpret_result("H4_delay", t_stat, p_value),
                 }
             )
         else:
@@ -167,13 +215,18 @@ def main() -> None:
             "ridership_ratio",
         ]
         if len(rockaway_ratio) > 0 and len(times_square_ratio) > 0:
+            mean_difference = rockaway_ratio.mean() - times_square_ratio.mean()
+            ci_low, ci_high = bootstrap_mean_difference(rockaway_ratio, times_square_ratio)
             results.append(
                 {
                     "hypothesis": "H4_ridership",
-                    "test": "descriptive difference in mean ridership ratio",
-                    "statistic": rockaway_ratio.mean() - times_square_ratio.mean(),
+                    "test": "descriptive mean difference in ridership ratio",
+                    "statistic": mean_difference,
                     "p_value": np.nan,
                     "n": len(rockaway_ratio) + len(times_square_ratio),
+                    "ci_low": ci_low,
+                    "ci_high": ci_high,
+                    "interpretation": interpret_result("H4_ridership", mean_difference, np.nan),
                 }
             )
         else:

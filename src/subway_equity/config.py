@@ -1,3 +1,5 @@
+"""Central configuration values shared across the subway equity pipeline."""
+
 from pathlib import Path
 
 

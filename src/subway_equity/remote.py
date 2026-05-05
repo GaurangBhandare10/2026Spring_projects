@@ -1,3 +1,4 @@
+"""Remote data access and caching helpers for the subway equity pipeline."""
 
 from __future__ import annotations
 
@@ -41,6 +42,8 @@ except ModuleNotFoundError:
 
 
 def build_session() -> requests.Session:
+    """Create a requests session with the project's standard headers."""
+
     session = requests.Session()
     session.headers.update({"User-Agent": "nyc-subway-equity-analysis/1.0"})
     app_token = os.getenv("SOCRATA_APP_TOKEN")
@@ -50,11 +53,15 @@ def build_session() -> requests.Session:
 
 
 def _cache_path(name: str) -> Path:
+    """Return the full cache path for a named remote resource."""
+
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     return CACHE_DIR / name
 
 
 def _pickle_cache_path(name: str) -> Path:
+    """Return the pickle fallback path used when parquet support is missing."""
+
     path = _cache_path(name)
     if path.suffix == ".parquet":
         return path.with_suffix(".pkl")
@@ -62,6 +69,8 @@ def _pickle_cache_path(name: str) -> Path:
 
 
 def _raise_for_status(response: requests.Response) -> None:
+    """Raise an HTTP error with a more informative message body."""
+
     try:
         response.raise_for_status()
     except requests.HTTPError as exc:
@@ -78,6 +87,8 @@ def _get_json_with_retries(
     timeout: tuple[int, int] = (30, 300),
     max_attempts: int = 4,
 ) -> list[dict]:
+    """Fetch JSON from a URL with retry handling for transient network errors."""
+
     last_error: Exception | None = None
     for attempt in range(1, max_attempts + 1):
         try:
@@ -99,6 +110,8 @@ def _get_json_with_retries(
 
 
 def _read_frame_cache(cache_name: str) -> pd.DataFrame | None:
+    """Read a cached DataFrame from parquet or pickle if it exists."""
+
     path = _cache_path(cache_name)
     pickle_path = _pickle_cache_path(cache_name)
     if path.exists():
@@ -114,6 +127,8 @@ def _read_frame_cache(cache_name: str) -> pd.DataFrame | None:
 
 
 def _write_frame_cache(df: pd.DataFrame, cache_name: str) -> pd.DataFrame:
+    """Write a DataFrame cache, preferring parquet with pickle fallback."""
+
     path = _cache_path(cache_name)
     pickle_path = _pickle_cache_path(cache_name)
     try:
@@ -124,6 +139,8 @@ def _write_frame_cache(df: pd.DataFrame, cache_name: str) -> pd.DataFrame:
 
 
 def fetch_socrata_dataset(name: str, force_refresh: bool = False, batch_size: int = 50000) -> pd.DataFrame:
+    """Download a full Socrata dataset, cache it locally, and return it."""
+
     config = SOCRATA_DATASETS[name]
     if not force_refresh:
         cached = _read_frame_cache(config["cache_name"])
@@ -202,6 +219,8 @@ def fetch_socrata_aggregated_dataset(
     cache_name_override: str | None = None,
     use_cache: bool = True,
 ) -> pd.DataFrame:
+    """Fetch an aggregated Socrata query result with optional caching."""
+
     config = SOCRATA_DATASETS[name]
     cache_name = cache_name_override or config["cache_name"]
     if use_cache and not force_refresh:
@@ -261,6 +280,8 @@ def fetch_socrata_aggregated_dataset(
 
 
 def _monthly_windows(start: str, end: str) -> list[tuple[str, str]]:
+    """Split a long datetime range into month-sized API query windows."""
+
     start_ts = pd.Timestamp(start)
     end_ts = pd.Timestamp(end)
     starts = pd.date_range(start=start_ts.normalize(), end=end_ts.normalize(), freq="MS")
@@ -277,6 +298,8 @@ def _monthly_windows(start: str, end: str) -> list[tuple[str, str]]:
 
 
 def fetch_ridership_daily_aggregates(force_refresh: bool = False, batch_size: int = 50000) -> pd.DataFrame:
+    """Fetch daily station ridership aggregates across the analysis window."""
+
     config = SOCRATA_DATASETS["ridership"]
     if not force_refresh:
         cached = _read_frame_cache(config["cache_name"])
@@ -325,6 +348,8 @@ def fetch_ridership_daily_aggregates(force_refresh: bool = False, batch_size: in
 
 
 def download_gtfs_archive(force_refresh: bool = False) -> Path:
+    """Download the GTFS subway ZIP archive unless a cache already exists."""
+
     cache_path = _cache_path(GTFS_CONFIG["cache_name"])
     if cache_path.exists() and not force_refresh:
         return cache_path
@@ -337,6 +362,8 @@ def download_gtfs_archive(force_refresh: bool = False) -> Path:
 
 
 def read_gtfs_table(filename: str, force_refresh: bool = False, **kwargs) -> pd.DataFrame:
+    """Read one GTFS text file from the cached subway ZIP archive."""
+
     archive_path = download_gtfs_archive(force_refresh=force_refresh)
     with ZipFile(archive_path) as zip_file:
         members = {Path(member).name: member for member in zip_file.namelist() if not member.endswith("/")}
@@ -347,6 +374,8 @@ def read_gtfs_table(filename: str, force_refresh: bool = False, **kwargs) -> pd.
 
 
 def _fetch_census_rows(kind: str, county: str) -> pd.DataFrame:
+    """Fetch tract-level ACS rows for one county and one data theme."""
+
     if kind == "income":
         variables = ACS_CONFIG["income_variables"]
     elif kind == "race":
@@ -370,6 +399,8 @@ def _fetch_census_rows(kind: str, county: str) -> pd.DataFrame:
 
 
 def fetch_acs_dataset(kind: str, force_refresh: bool = False) -> pd.DataFrame:
+    """Fetch and cache an ACS dataset across all five NYC counties."""
+
     cache_name = f"acs_{kind}_{ACS_CONFIG['year']}_nyc.parquet"
     if not force_refresh:
         cached = _read_frame_cache(cache_name)
@@ -381,6 +412,8 @@ def fetch_acs_dataset(kind: str, force_refresh: bool = False) -> pd.DataFrame:
 
 
 def _extract_tract_geoid(payload: dict) -> str | None:
+    """Extract a tract GEOID from a Census geocoder response payload."""
+
     geographies = payload.get("result", {}).get("geographies", {})
     for key, values in geographies.items():
         if "tract" in key.lower() and values:
@@ -397,6 +430,8 @@ def geocode_station_tracts(
     lat_col: str,
     force_refresh: bool = False,
 ) -> pd.DataFrame:
+    """Map station coordinates to Census tracts using the Census geocoder."""
+
     cache_name = "station_tract_geocoder_cache.parquet"
     cached = None if force_refresh else _read_frame_cache(cache_name)
     completed_ids: set[str] = set()

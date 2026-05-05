@@ -1,3 +1,5 @@
+"""Input/output helpers shared across the NYC subway equity pipeline."""
+
 from pathlib import Path
 
 import pandas as pd

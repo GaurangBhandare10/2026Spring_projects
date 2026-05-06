@@ -1,4 +1,5 @@
 """Build a station-to-Census-tract crosswalk from GTFS stop coordinates."""
+""" To map station coordinates to tract GEOIDs - https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html """
 
 from pathlib import Path
 import sys

@@ -33,7 +33,7 @@ OUTPUT_FILES = {
     "tract_demographics": PROCESSED_DIR / "tract_demographics.csv",
     "station_analysis": PROCESSED_DIR / "station_analysis_table.csv",
     "line_analysis": PROCESSED_DIR / "line_analysis_table.csv",
-    "hypothesis_results": TABLES_DIR / "hypothesis_results.csv",
+    "hypothesis_results": RESULTS_DIR / "hypothesis_results.csv",
 }
 
 RIDERSHIP_BASELINE_YEAR = 2020

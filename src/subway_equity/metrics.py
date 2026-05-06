@@ -79,7 +79,7 @@ def bootstrap_correlation_interval(
     >>> x = pd.Series([1, 2, 3, 4, 5], dtype=float)
     >>> y = pd.Series([2, 4, 6, 8, 10], dtype=float)
     >>> low, high = bootstrap_correlation_interval(x, y, n_boot=200, seed=1)
-    >>> low <= 1.0 <= high
+    >>> bool(low <= 1.0 <= high)
     True
     """
 
@@ -159,7 +159,7 @@ def bootstrap_mean_difference(
     >>> left = pd.Series([4.0, 5.0, 6.0])
     >>> right = pd.Series([1.0, 2.0, 3.0])
     >>> low, high = bootstrap_mean_difference(left, right, n_boot=200, seed=1)
-    >>> low > 0 and high > 0
+    >>> bool(low > 0 and high > 0)
     True
     """
 
@@ -179,7 +179,7 @@ def bootstrap_mean_difference(
 def weighted_average(values: pd.Series, weights: pd.Series) -> float:
     """Return a weighted average while safely ignoring missing values.
 
-    >>> weighted_average(pd.Series([1.0, 3.0]), pd.Series([1.0, 3.0]))
+    >>> float(weighted_average(pd.Series([1.0, 3.0]), pd.Series([1.0, 3.0])))
     2.5
     """
 

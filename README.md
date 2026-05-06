@@ -141,6 +141,7 @@ export SOCRATA_APP_TOKEN=your_token_here
 ```
 .
 ├── README.md
+├── pytest.ini
 ├── data/
 │   ├── cache
 │   ├──processed/
@@ -172,13 +173,18 @@ export SOCRATA_APP_TOKEN=your_token_here
 │   ├── 07_run_hypothesis_tests.py
 │   ├── 08_make_visualizations.py
 |   └──readme.md
-└── src/
-    └── utility_functions/
-        ├── config.py
-        ├── io.py
-        ├── metrics.py
-        ├── remote.py
-        └── readme.md
+│── src/
+│    └── utility_functions/
+│       ├── config.py
+│       ├── io.py
+│       ├── metrics.py
+│       ├── remote.py
+│       └── readme.md
+└── tests/                            
+    ├── __init__.py                   
+    ├── conftest.py                   
+    ├── test_subway_equity.py         
+    └── test_scripts.py
 
 ```
 

@@ -20,6 +20,7 @@ import subway_equity.metrics as metrics_mod
 from subway_equity.io import (
     _available_raw_files,
     _missing_raw_file_error,
+    ensure_project_dirs,
     filter_to_datetime_window,
     first_existing,
     normalize_columns,
@@ -34,6 +35,7 @@ from subway_equity.metrics import (
     bootstrap_mean_difference,
     bootstrap_median_difference,
     bootstrap_partial_correlation_interval,
+    compute_ridership_index,
     compute_ridership_ratio,
     partial_correlation,
     weighted_average,
@@ -63,6 +65,51 @@ def station_df() -> pd.DataFrame:
         "year":    [2020, 2021, 2020, 2021, 2020],
         "riders":  [100.0, 120.0, 200.0, 180.0, 50.0],
     })
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# io.ensure_project_dirs
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestEnsureProjectDirs:
+    def test_creates_all_expected_dirs(self, tmp_path):
+        dirs = [tmp_path / d for d in ("raw", "interim", "processed", "figures", "tables", "cache")]
+        with patch.object(io_mod, "RAW_DIR", dirs[0]), \
+             patch.object(io_mod, "INTERIM_DIR", dirs[1]), \
+             patch.object(io_mod, "PROCESSED_DIR", dirs[2]), \
+             patch.object(io_mod, "FIGURES_DIR", dirs[3]), \
+             patch.object(io_mod, "TABLES_DIR", dirs[4]), \
+             patch.object(io_mod, "CACHE_DIR", dirs[5]):
+            ensure_project_dirs()
+        assert all(d.exists() for d in dirs)
+
+    def test_is_idempotent(self, tmp_path):
+        dirs = [tmp_path / d for d in ("raw", "interim", "processed", "figures", "tables", "cache")]
+        with patch.object(io_mod, "RAW_DIR", dirs[0]), \
+             patch.object(io_mod, "INTERIM_DIR", dirs[1]), \
+             patch.object(io_mod, "PROCESSED_DIR", dirs[2]), \
+             patch.object(io_mod, "FIGURES_DIR", dirs[3]), \
+             patch.object(io_mod, "TABLES_DIR", dirs[4]), \
+             patch.object(io_mod, "CACHE_DIR", dirs[5]):
+            ensure_project_dirs()
+            ensure_project_dirs()  # calling twice should not raise
+        assert all(d.exists() for d in dirs)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# metrics.compute_ridership_index (alias)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestComputeRidershipIndex:
+    def test_alias_matches_ratio(self):
+        df = pd.DataFrame({
+            "station": ["A", "A", "A"],
+            "year": [2020, 2021, 2022],
+            "riders": [100.0, 120.0, 80.0],
+        })
+        ratio = compute_ridership_ratio(df, "station", "year", "riders", 2020)
+        index = compute_ridership_index(df, "station", "year", "riders", 2020)
+        assert ratio.round(4).tolist() == index.round(4).tolist()
 
 
 # ─────────────────────────────────────────────────────────────────────────────

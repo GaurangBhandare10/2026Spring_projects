@@ -1,5 +1,8 @@
 """Run the project hypothesis tests and export a compact results table."""
-""" For H2 - https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html """
+""" For H2 - https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html 
+    For H3 - https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html
+    For h4 - https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html
+"""
 
 from pathlib import Path
 import sys

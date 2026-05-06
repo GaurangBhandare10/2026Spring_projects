@@ -1,4 +1,5 @@
 """Prepare tract-level ACS income and race measures for station linkage."""
+""" To pull tract income and race data - https://api.census.gov/data/2022/acs/acs5.html """
 
 from pathlib import Path
 import sys

@@ -196,7 +196,7 @@ def plot_h1_income_vs_service(station_year: pd.DataFrame) -> None:
     )
     _configure_external_legend(ax, title="Minority-majority / Ridership")
     fig.subplots_adjust(right=0.76)
-    _save_figure(fig, "01_h1_income_vs_peak_service.png")
+    _save_figure(fig, "h1_income_vs_peak_service.png")
 
 
 def plot_h2_delay_vs_income(line: pd.DataFrame) -> None:
@@ -237,7 +237,7 @@ def plot_h2_delay_vs_income(line: pd.DataFrame) -> None:
         ha="left",
         bbox={"facecolor": "white", "edgecolor": "#cccccc", "boxstyle": "round,pad=0.4"},
     )
-    _save_figure(fig, "02_h2_delay_vs_income.png")
+    _save_figure(fig, "h2_delay_vs_income.png")
 
 
 def plot_h3_weekday_weekend_ratio(station_year: pd.DataFrame) -> None:
@@ -288,7 +288,7 @@ def plot_h3_weekday_weekend_ratio(station_year: pd.DataFrame) -> None:
         ha="left",
         bbox={"facecolor": "white", "edgecolor": "#cccccc", "boxstyle": "round,pad=0.4"},
     )
-    _save_figure(fig, "03_h3_weekday_weekend_ratio.png")
+    _save_figure(fig, "h3_weekday_weekend_ratio.png")
 
 
 def plot_h4_shuttle_monthly_delays(delays: pd.DataFrame) -> None:
@@ -335,7 +335,7 @@ def plot_h4_shuttle_monthly_delays(delays: pd.DataFrame) -> None:
         bbox={"facecolor": "white", "edgecolor": "#cccccc", "boxstyle": "round,pad=0.4"},
     )
     fig.subplots_adjust(right=0.78)
-    _save_figure(fig, "04_h4_shuttle_monthly_delays.png")
+    _save_figure(fig, "h4_shuttle_monthly_delays.png")
 
 
 def plot_equity_overview(station_year: pd.DataFrame) -> None:
@@ -385,7 +385,7 @@ def plot_equity_overview(station_year: pd.DataFrame) -> None:
         ha="left",
         bbox={"facecolor": "white", "edgecolor": "#cccccc", "boxstyle": "round,pad=0.4"},
     )
-    _save_figure(fig, "05_equity_overview_minority_majority_service.png")
+    _save_figure(fig, "equity_overview_minority_majority_service.png")
 
 
 def main() -> None:

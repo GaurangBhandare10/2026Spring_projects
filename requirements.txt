@@ -8,3 +8,5 @@ pyarrow>=16.0
 matplotlib>=3.8
 seaborn>=0.13
 requests>=2.32
+pytest>=7.0
+pytest-cov>=4.0

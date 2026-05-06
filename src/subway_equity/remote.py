@@ -1,4 +1,8 @@
 """Remote data access and caching helpers for the subway equity pipeline."""
+"""References - 
+API fetch logic for ridership and delay pulls
+https://dev.socrata.com/docs/queries/  API fetch logic for ridership and delay pulls
+"""
 
 from __future__ import annotations
 

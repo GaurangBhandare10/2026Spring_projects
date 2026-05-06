@@ -174,7 +174,7 @@ export SOCRATA_APP_TOKEN=your_token_here
 │   ├── 08_make_visualizations.py
 |   └──readme.md
 │── src/
-│    └── utility_functions/
+│    └── subway_equity/
 │       ├── config.py
 │       ├── io.py
 │       ├── metrics.py

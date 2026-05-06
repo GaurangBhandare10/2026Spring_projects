@@ -122,7 +122,7 @@ python scripts/04_delays.py
 python scripts/05_census.py
 python scripts/06_build_analysis_table.py
 python scripts/07_run_hypothesis_tests.py
-python scripts/08_visualization.py
+python scripts/08_visualizations.py
 ```
 
 ### 8.3 Data Access  

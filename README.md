@@ -239,6 +239,31 @@ Data is fetched automatically via APIs on first run and cached locally in `data/
 
 ---
 
+## Acknowledgements
+
+This project was developed with assistance from the following resources:
+
+- [pandas — Reshaping and pivot tables](https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html) — used in `06_build_analysis_table.py` for `pivot_table` and `explode`
+- [GeeksforGeeks — pandas.pivot_table()](https://www.geeksforgeeks.org/python/python-pandas-pivot_table/) — reference for reshaping ridership data from long to wide format
+- [pandas — Series.between()](https://pandas.pydata.org/docs/reference/api/pandas.Series.between.html) — used in `io.py` for datetime window filtering
+- [GeeksforGeeks — Working with datetime in pandas](https://www.geeksforgeeks.org/python/working-with-datetime-in-pandas-dataframe/) — reference for `pd.to_datetime` and `pd.Timestamp` in `filter_to_datetime_window`
+- [U.S. Census Bureau — Data API User Guide](https://www.census.gov/data/developers/guidance/api-user-guide.html) — used in `05_census.py` for ACS income and race data queries
+- [GeoPandas Documentation](https://geopandas.org/en/stable/docs.html) — used in `io.py` for reading raw geospatial station files
+- [GeeksforGeeks — pandas `cut()` and `qcut()`](https://www.geeksforgeeks.org/python/how-to-use-pandas-cut-and-qcut/) — reference for `pd.qcut` used in `assign_income_quartiles`
+- [Practical Business Python — Binning with qcut and cut](https://pbpython.com/pandas-qcut-cut.html) — additional reference for quartile binning of tract income
+- [GeeksforGeeks — OLS using statsmodels](https://www.geeksforgeeks.org/data-science/ordinary-least-squares-ols-using-statsmodels/) — reference for `sm.OLS`, `add_constant`, and `.resid` used in `partial_correlation`
+- [statsmodels — OLS example notebook](https://www.statsmodels.org/dev/examples/notebooks/generated/ols.html) — official reference for residual extraction in `partial_correlation`
+- [GeeksforGeeks — Bootstrap Method](https://www.geeksforgeeks.org/maths/bootstrap-method/) — reference for the resampling loop in all four bootstrap confidence interval functions
+- [GeeksforGeeks — Confidence Intervals in Python](https://www.geeksforgeeks.org/python/how-to-plot-a-confidence-interval-in-python/) — reference for `np.quantile([0.025, 0.975])` pattern used across bootstrap functions
+- [ChatGPT (OpenAI)](https://chatgpt.com/share/69fc15ee-750c-83ea-91b7-1116dfabe903) — consulted for debugging and implementation guidance during development
+- [ChatGPT (OpenAI)](https://chatgpt.com/share/69fd41bd-8b0c-83ea-95e5-64192048c3c3) — consulted for debugging and implementation guidance during development
+- [scipy — pearsonr](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html) — used in H1 bootstrap correlation interval
+- [scipy — spearmanr](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html) — used in H2 bootstrap correlation interval
+- [scipy — mannwhitneyu](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html) — used for H3 weekday vs weekend ridership gap test
+- [scipy — ttest_ind (Welch's t-test)](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html) — used for H4 shuttle delay comparison
+- [Seaborn Documentation](https://seaborn.pydata.org/) — used throughout `08_visualizations.py` for all hypothesis figures
+- [pytest-cov Documentation](https://pytest-cov.readthedocs.io/en/latest/) — used for measuring test coverage across `subway_equity/` and `scripts/`
+
 ## 12. Team
 - Gaurang Bhandare
 - Avni Wadhwani

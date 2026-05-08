@@ -264,6 +264,8 @@ This project was developed with assistance from the following resources:
 - [Seaborn Documentation](https://seaborn.pydata.org/) — used throughout `08_visualizations.py` for all hypothesis figures
 - [pytest-cov Documentation](https://pytest-cov.readthedocs.io/en/latest/) — used for measuring test coverage across `subway_equity/` and `scripts/`
 
+---
+
 ## 12. Team
 - Gaurang Bhandare
 - Avni Wadhwani

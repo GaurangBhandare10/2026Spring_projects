@@ -8,6 +8,11 @@ This project investigates whether New York City's subway system delivers equitab
 
 ---
 
+## Important Note
+Please refer to the project documentation and README for a better understanding of the project workflow, assumptions, and analysis methodology. We have included detailed explanations to make the project easier to follow and reproduce.
+
+---
+
 ## 1. Problem Statement
 
 Does New York City's subway system provide equal service quality across neighborhoods, or do lower-income and minority-majority areas receive systematically worse service?

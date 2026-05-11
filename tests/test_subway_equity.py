@@ -4,8 +4,6 @@ Run with:
     pytest tests/test_subway_equity.py --cov=subway_equity --cov-report=term-missing
 """
 
-from __future__ import annotations
-
 import tempfile
 import zipfile
 from pathlib import Path

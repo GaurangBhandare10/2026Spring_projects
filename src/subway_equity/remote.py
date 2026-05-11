@@ -4,8 +4,6 @@ API fetch logic for ridership and delay pulls
 https://dev.socrata.com/docs/queries/  API fetch logic for ridership and delay pulls
 """
 
-from __future__ import annotations
-
 import os
 from pathlib import Path
 from datetime import datetime

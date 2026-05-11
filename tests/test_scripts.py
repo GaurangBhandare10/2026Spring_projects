@@ -8,8 +8,6 @@ Run with:
     pytest tests/test_scripts.py --cov=scripts --cov-report=term-missing
 """
 
-from __future__ import annotations
-
 import importlib.util
 import sys
 import tempfile

@@ -1,7 +1,5 @@
 """Remote data access and caching helpers for the subway equity pipeline."""
 
-from __future__ import annotations
-
 import os
 from pathlib import Path
 from datetime import datetime

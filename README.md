@@ -155,6 +155,30 @@ python scripts/06_build_analysis_table.py
 python scripts/07_run_hypothesis_tests.py
 python scripts/08_visualizations.py
 ```
+---
+
+#### Expected runtimes (first run vs. subsequent runs)
+
+Every script that hits an external API caches its result locally in
+`data/interim/remote_cache/`. After the first run, all scripts finish in
+seconds. **First-run times depend on your internet connection** and whether
+you have a Socrata app token set (see below).
+
+| Script | What it fetches | First run | Subsequent runs |
+|--------|----------------|-----------|-----------------|
+| `01_station_crosswalk.py` | Census Geocoder — one HTTP call per station (~490 stations, 20 ms polite delay each) | 2 – 5 min | < 5 s |
+| `02_service_frequency.py` | MTA GTFS ZIP archive (~10–50 MB) | 1 – 3 min | < 5 s |
+| `03_ridership.py` | MTA Socrata ridership API — **60 aggregated monthly queries** (Jan 2020 → Dec 2024); server-side GROUP BY returns ~15 000 rows per call, so each month fits in one request | 3 – 15 min | < 10 s |
+| `04_delays.py` | MTA Socrata delays dataset (single fetch) | 2 – 5 min | < 5 s |
+| `05_census.py` | Census ACS API — 10 calls (5 NYC counties × income + race) | < 2 min | < 5 s |
+| `06_build_analysis_table.py` | No network — merges local CSVs only | < 10 s | < 10 s |
+| `07_run_hypothesis_tests.py` | No network — statistical tests + bootstrapping (n=5 000) | < 30 s | < 30 s |
+| `08_visualizations.py` | No network — generates PNG figures from local tables | < 15 s | < 15 s |
+
+> **Total first run: roughly 10 – 30 minutes** depending on Socrata server
+> load and your connection speed. Scripts 06–08 are instant on every run.
+
+---
 
 ### Run tests with coverage
 

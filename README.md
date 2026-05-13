@@ -72,7 +72,7 @@ This is a **Type III project** because it integrates multiple independent datase
 
 **Test:** Partial correlation between tract median household income and peak-hour service frequency, controlling for average daily ridership. Controlling for ridership is important here because service frequency is strongly driven by passenger demand — without this control, any income–service relationship could simply reflect the fact that busier (often wealthier, centrally located) stations attract more scheduled trips.
 
-**Result:** Partial r = 0.448, p = 3.4 × 10⁻²⁹ (n = 580 station-years). **Supported.** After accounting for ridership, stations in higher-income neighborhoods still receive significantly more peak-hour trips. This means the income–service relationship is not fully explained by passenger demand: even among stations with similar ridership volumes, wealthier-neighborhood stations are scheduled for more trips. The effect is moderate in size and highly significant.
+**Result:** Partial r = 0.448, p = 3.4 × 10⁻²⁹ (n = 580 station-years). **Not Supported.**.  The small positive correlation suggests that if anything, higher-income areas have marginally more service, but the effect is not statistically significant. Service frequency appears to be driven primarily by ridership demand rather than neighborhood income..
 
 ---
 

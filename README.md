@@ -296,7 +296,7 @@ This project was developed with assistance from the following resources:
 - [GeeksforGeeks — Confidence Intervals in Python](https://www.geeksforgeeks.org/python/how-to-plot-a-confidence-interval-in-python/) — reference for `np.quantile([0.025, 0.975])` pattern used across bootstrap functions
 - [ChatGPT (OpenAI)](https://chatgpt.com/share/69fc15ee-750c-83ea-91b7-1116dfabe903) — consulted for debugging and implementation guidance during development
 - [ChatGPT (OpenAI)](https://chatgpt.com/share/69fd41bd-8b0c-83ea-95e5-64192048c3c3) — consulted for debugging and implementation guidance during development
-- https://chatgpt.com/share/6a044433-1f60-83ea-9479-4f701b432e90 - consulted for debugging and implementation guidance during development
+- [ChatGPT (OpenAI)](https://chatgpt.com/share/6a044433-1f60-83ea-9479-4f701b432e90) - consulted for debugging and implementation guidance during development
 - [scipy — pearsonr](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html) — used in H1 bootstrap correlation interval
 - [scipy — spearmanr](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html) — used in H2 bootstrap correlation interval
 - [scipy — mannwhitneyu](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html) — used for H3 weekday vs weekend ridership gap test

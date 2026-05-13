@@ -4,7 +4,7 @@
 
 This project investigates whether New York City's subway system delivers equitable service across neighborhoods that differ by income and racial composition. We integrate four independent data sources — MTA operational records, GTFS schedules, MTA delay statistics, and U.S. Census ACS tract-level demographics — to test four targeted hypotheses about service frequency, delay burden, ridership recovery, and a shuttle-line case study.
 
-**Bottom line:** Low-income neighborhoods do not receive systematically fewer peak-hour trips (H1 not supported), and wealthier lines are not reliably less delayed (H2 not supported). However, the weekday–weekend ridership gap is demonstrably larger in low-income stations than in high-income ones (H3 supported), and the Rockaway Park Shuttle experiences dramatically more delays than the 42nd Street Shuttle despite comparable service structures (H4 supported).
+**Bottom line:** Even after controlling for ridership, higher-income stations receive significantly more peak-hour trips (H1 supported). Income-based differences in line-level delay rates are not detectable at the line level, though this is likely a power issue rather than a true null effect (H2 inconclusive). The weekday–weekend ridership gap is significantly larger at low-income stations (H3 supported). The Rockaway Park Shuttle experiences far more delays than the 42nd Street Shuttle (H4 delay supported).
 
 ---
 
@@ -45,6 +45,12 @@ This is a **Type III project** because it integrates multiple independent datase
 
 **Key Contribution:** The project builds a **station-to-Census-tract crosswalk** that does not exist in any single dataset, enabling the equity comparisons at the core of all four hypotheses.
 
+> **Glossary of technical terms**
+> - **GTFS (General Transit Feed Specification):** A standardized open data format published by transit agencies that describes scheduled routes, stops, trips, and departure times. The MTA publishes a GTFS feed for the NYC subway that this project uses to compute peak-hour service frequency.
+> - **ACS (American Community Survey):** An annual U.S. Census Bureau survey that provides tract-level estimates of income, race, housing, and other demographic characteristics.
+> - **Census tract:** A small, relatively stable geographic subdivision of a county used by the U.S. Census Bureau, typically containing 1,200–8,000 residents. Used here as the unit linking stations to demographic data.
+> - **Socrata:** The open-data platform used by New York State to publish MTA datasets, accessible via a REST API.
+
 ---
 
 ## 4. Data Sources
@@ -64,9 +70,9 @@ This is a **Type III project** because it integrates multiple independent datase
 
 **Hypothesis:** Stations in low-income Census tracts receive fewer scheduled peak-hour trips than stations in high-income tracts, even after controlling for ridership.
 
-**Test:** Partial correlation between tract median income and peak-hour service frequency, controlling for average daily ridership.
+**Test:** Partial correlation between tract median household income and peak-hour service frequency, controlling for average daily ridership. Controlling for ridership is important here because service frequency is strongly driven by passenger demand — without this control, any income–service relationship could simply reflect the fact that busier (often wealthier, centrally located) stations attract more scheduled trips.
 
-**Result:** Partial r = 0.039, p = 0.355 (n = 580). **Not clearly supported.** The small positive correlation suggests that if anything, higher-income areas have marginally more service, but the effect is not statistically significant. Service frequency appears to be driven primarily by ridership demand rather than neighborhood income.
+**Result:** Partial r = 0.448, p = 3.4 × 10⁻²⁹ (n = 580 station-years). **Supported.** After accounting for ridership, stations in higher-income neighborhoods still receive significantly more peak-hour trips. This means the income–service relationship is not fully explained by passenger demand: even among stations with similar ridership volumes, wealthier-neighborhood stations are scheduled for more trips. The effect is moderate in size and highly significant.
 
 ---
 
@@ -74,19 +80,21 @@ This is a **Type III project** because it integrates multiple independent datase
 
 **Hypothesis:** Lines whose stations are predominantly in low-income tracts show a higher average weekly delay rate than lines in high-income tracts.
 
-**Test:** Spearman correlation between ridership-weighted income score and average weekly delay incidents per line.
+**Test:** Spearman rank correlation between a line's ridership-weighted neighborhood income score and its average weekly delay incidents. Spearman is used because delay counts are right-skewed.
 
-**Result:** Spearman ρ = 0.198, p = 0.416 (n = 19 lines). **Not clearly supported.** There is a weak positive correlation (wealthier lines slightly more delayed), but it is not statistically significant given the small number of lines and the noisiness of aggregated delay data.
+**Result:** Spearman ρ = −0.0018, p = 0.994 (n = 19 lines). **Inconclusive — likely underpowered.** The correlation is essentially zero. However, this result should not be interpreted as strong evidence that income and delays are unrelated. With only 19 distinct subway lines, the test has very limited statistical power — even a genuine effect of moderate size would likely fail to reach significance. The line-level aggregation collapses hundreds of stations into 19 data points, discarding most of the available variation. A station-level analysis — assigning each station a delay proxy based on its routes and correlating with tract income across hundreds of stations — would be a more sensitive test of this hypothesis and is recommended for future work.
 
 ---
 
 ### H3 — Weekday vs. Weekend Ridership Gap Across Income
 
-**Hypothesis:** The ridership gap between low- and high-income station areas is smaller on weekends than on weekdays.
+**Hypothesis:** The ridership gap between low- and high-income station areas is smaller on weekends than on weekdays (2022–2024).
 
-**Test:** Mann-Whitney U test comparing weekday-to-weekend ridership ratios between Q1 (low income) and Q4 (high income) stations.
+**Test:** Mann-Whitney U test comparing weekday-to-weekend ridership ratios between Q1 (lowest income quartile) and Q4 (highest income quartile) stations.
 
-**Result:** U = 101,416, p = 3.2 × 10⁻⁸ (n = 820), bootstrapped 95% CI for median difference: [0.087, 0.275]. **Supported.** Low-income stations have a significantly higher weekday-to-weekend ridership ratio than high-income stations, consistent with the hypothesis that lower-income commuters depend more on weekday transit while higher-income riders show more uniform usage across the week.
+**Result:** U = 101,416, p = 3.2 × 10⁻⁸ (n = 820 station-years), bootstrapped 95% CI for median difference (Q1 − Q4): [0.058, 0.238]. **Supported at the Q1 vs. Q4 comparison.** Low-income stations (Q1) have a statistically higher weekday-to-weekend ridership ratio than high-income stations (Q4), consistent with lower-income commuters relying more heavily on transit for work trips while higher-income riders use the subway more uniformly across the week.
+
+**Caveat:** The pattern is strongest at the extremes (Q1 vs. Q4). The intermediate quartiles (Q2 and Q3) show ratios that overlap considerably with Q1, suggesting the income gradient is not perfectly monotonic across all four groups. The result is most reliably interpreted as a difference between the lowest- and highest-income neighborhoods rather than a smooth income-wide trend.
 
 ---
 
@@ -94,11 +102,11 @@ This is a **Type III project** because it integrates multiple independent datase
 
 **Hypothesis:** The Rockaway Park S Shuttle shows a higher delay rate and lower ridership recovery than the 42nd Street S Shuttle over 2020–2024.
 
-**Test (delays):** Two-sample Welch t-test on monthly delay counts.
+**Test (delays):** Two-sample Welch t-test on monthly delay counts across the full 2020–2024 window.
 
-**Result (delays):** t = 17.0, p = 1.8 × 10⁻²⁶ (n = 116 months combined), bootstrapped 95% CI for mean difference: [30.7, 38.6]. **Supported.** The Rockaway Park Shuttle averages roughly 34 more delay incidents per month than the 42nd Street Shuttle — a large and highly significant gap that cannot plausibly be attributed to chance.
+**Result (delays):** t = 17.0, p = 1.8 × 10⁻²⁶ (n = 116 months combined), bootstrapped 95% CI for mean difference: [30.7, 38.6]. **Supported.** The Rockaway Park Shuttle averages roughly 34 more delay incidents per month than the 42nd Street Shuttle — a large, highly significant gap. Because both shuttles are operated by the MTA under the same institutional conditions, the difference most likely reflects geographic and infrastructure factors (coastal exposure, aging elevated structure on the Rockaway line) rather than service-level decisions.
 
-**Result (ridership):** The ridership comparison is reported descriptively (mean difference in ridership ratio with a bootstrapped CI); no formal p-value is reported because the number of station-year observations is small.
+**Result (ridership):** Reported descriptively as a mean difference in ridership ratio with a bootstrapped 95% CI. No formal p-value is reported because the number of station-year observations is small (5 Rockaway stations + 2 42nd Street stations), making a t-test unreliable.
 
 ---
 
@@ -119,9 +127,10 @@ This is a **Type III project** because it integrates multiple independent datase
 
 - Observational analysis only — no causal inference is claimed.
 - Census tract catchment areas do not perfectly match subway ridership catchments.
-- Delay data is aggregated at the line level, not the station level.
+- Delay data is aggregated at the line level, not the station level, which limits the power of H2.
 - Ridership data begins in February 2022 for some stations, creating an incomplete 2020–2021 baseline for some comparisons.
-- The number of distinct subway lines (n = 19) is small for a correlation analysis (H2).
+- The number of distinct subway lines (n = 19) is too small for H2 to be conclusive.
+- H3 shows a clear Q1 vs. Q4 difference but is not monotonic across all four income quartiles.
 
 ---
 
@@ -155,6 +164,7 @@ python scripts/06_build_analysis_table.py
 python scripts/07_run_hypothesis_tests.py
 python scripts/08_visualizations.py
 ```
+
 ---
 
 #### Expected runtimes (first run vs. subsequent runs)
@@ -261,9 +271,9 @@ Data is fetched automatically via APIs on first run and cached locally in `data/
 
 | Hypothesis | Test | Statistic | p-value | n | 95% CI | Interpretation |
 |------------|------|-----------|---------|---|--------|----------------|
-| H1: Income → Service Frequency | Partial correlation | r = 0.039 | 0.355 | 580 stations | [−0.000, 0.074] | Not clearly supported |
-| H2: Income → Delay Rate | Spearman correlation | ρ = 0.198 | 0.416 | 19 lines | [−0.284, 0.625] | Not clearly supported |
-| H3: Weekday vs. Weekend Gap | Mann-Whitney U | U = 101,416 | 3.2×10⁻⁸ | 820 stations | [0.087, 0.275] | **Supported** |
+| H1: Income → Service Frequency | Partial correlation (controlling for ridership) | r = 0.448 | 3.4×10⁻²⁹ | 580 stations | — | **Supported** |
+| H2: Income → Delay Rate | Spearman correlation (line level) | ρ = −0.0018 | 0.994 | 19 lines | — | Inconclusive (n too small) |
+| H3: Weekday vs. Weekend Gap | Mann-Whitney U (Q1 vs Q4) | U = 101,416 | 3.2×10⁻⁸ | 820 stations | [0.058, 0.238] | **Supported (Q1 vs Q4)** |
 | H4 (delays): Shuttle comparison | Welch t-test | t = 17.0 | 1.8×10⁻²⁶ | 116 months | [30.7, 38.6] | **Supported** |
 
 ---
